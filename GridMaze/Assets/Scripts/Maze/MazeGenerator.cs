@@ -19,38 +19,44 @@ namespace GridMaze.Maze
             {
                 for (var column = 0; column < tileDatas.GetLength(1); column++)
                 {
-                    // Ряды идут вниз по X, а линии вправо по Z
+                    // Первый индекс вниз, второй вправо
                     tiles[row, column] = Tile.Create(tileDatas[row, column], row, column,
                         tr.position + new Vector3(row * offset, 0,
                             +column * offset), tr);
                 }
             }
 
-            var horizontalWalls = new Wall[mazeData.HorizontalWallDatas.GetLength(0),
-                mazeData.HorizontalWallDatas.GetLength(1)];
-            for (var line = 0; line < mazeData.HorizontalWallDatas.GetLength(0); line++)
+            var horizontalWallLines = new Line[mazeData.HorizontalWallDataLines.Length];
+            for (var lineId = 0; lineId < horizontalWallLines.Length; lineId++)
             {
-                for (var wall = 0; wall < mazeData.HorizontalWallDatas.GetLength(1); wall++)
+                var dataLine = mazeData.HorizontalWallDataLines[lineId];
+                var wallLine = new Wall[dataLine.WallDatas.Length];
+                for (var wall = 0; wall < wallLine.Length; wall++)
                 {
-                    horizontalWalls[line, wall] = Wall.CreateHorizontal(mazeData.HorizontalWallDatas[line, wall],
-                        tr.position + new Vector3(line * offset - offset / 2, 0,
+                    wallLine[wall] = Wall.CreateHorizontal(dataLine.WallDatas[wall],
+                        tr.position + new Vector3(lineId * offset - offset / 2, 0,
                             wall * offset), tr);
                 }
+
+                horizontalWallLines[lineId] = new Line(wallLine);
             }
 
-            var verticalWalls = new Wall[mazeData.VerticalWallDatas.GetLength(0),
-                mazeData.VerticalWallDatas.GetLength(1)];
-            for (var line = 0; line < mazeData.VerticalWallDatas.GetLength(0); line++)
+            var verticalWallLines = new Line[mazeData.VerticalWallDataLines.Length];
+            for (var lineId = 0; lineId < verticalWallLines.Length; lineId++)
             {
-                for (var wall = 0; wall < mazeData.VerticalWallDatas.GetLength(1); wall++)
+                var dataLine = mazeData.VerticalWallDataLines[lineId];
+                var wallLine = new Wall[dataLine.WallDatas.Length];
+                for (var wall = 0; wall < wallLine.Length; wall++)
                 {
-                    verticalWalls[line, wall] = Wall.CreateVertical(mazeData.VerticalWallDatas[line, wall],
-                        tr.position + new Vector3(line * offset, 0,
-                            wall * offset - offset / 2), tr);
+                    wallLine[wall] = Wall.CreateVertical(dataLine.WallDatas[wall],
+                        tr.position + new Vector3(wall * offset, 0,
+                            lineId * offset - offset / 2), tr);
                 }
-            }
 
-            return new MazeGrids(tiles, horizontalWalls, verticalWalls);
+                verticalWallLines[lineId] = new Line(wallLine);
+            }
+            
+            return new MazeGrids(tiles, horizontalWallLines, verticalWallLines);
         }
 
         private float GetWallOffset()

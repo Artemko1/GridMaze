@@ -2,7 +2,7 @@
 {
     public class WallSelector
     {
-        public Wall[] CurrentSelection { get; private set; }
+        public Line CurrentSelection { get; private set; }
 
         private readonly MazeGrids mazeGrids;
 
@@ -19,7 +19,7 @@
 
         public void ResumeSelection()
         {
-            foreach (var wall in CurrentSelection)
+            foreach (var wall in CurrentSelection.Walls)
             {
                 WallOutliner.Select(wall.Renderer);
             }
@@ -27,7 +27,7 @@
 
         public void CleanSelection()
         {
-            foreach (var wall in CurrentSelection)
+            foreach (var wall in CurrentSelection.Walls)
             {
                 WallOutliner.Deselect(wall.Renderer);
             }

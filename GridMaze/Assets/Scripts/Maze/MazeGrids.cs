@@ -1,53 +1,55 @@
 ﻿using System;
 using GridMaze.Core;
-using UnityEngine;
 
 namespace GridMaze.Maze
 {
     public class MazeGrids
     {
         private readonly Tile[,] tiles = null;
-        private readonly Wall[,] horizontalWalls;
-        private readonly Wall[,] verticalWalls;
-        
-        private readonly Wall[] selectedVerticalWallLine; // Длина равна высоте лабиринта
-        private readonly Wall[] selectedHorizontalWallLine; // Длина равна ширине лабиринта
 
-        public MazeGrids(Tile[,] tiles, Wall[,] horizontalWalls, Wall[,] verticalWalls)
+        private readonly Line[] horizontalWallLines;
+        private readonly Line[] verticalWallLines;
+
+        public MazeGrids(Tile[,] tiles, Line[] horizontalWallLines,  Line[] verticalWallLines)
         {
             this.tiles = tiles;
-            this.horizontalWalls = horizontalWalls;
-            this.verticalWalls = verticalWalls;
-            selectedVerticalWallLine = new Wall[verticalWalls.GetLength(0)]; // должно быть 2
-            selectedHorizontalWallLine = new Wall[horizontalWalls.GetLength(1)]; // должно быть 7
+            this.horizontalWallLines = horizontalWallLines;
+            this.verticalWallLines = verticalWallLines;
         }
 
         public Tile GetTile(int x, int z) => tiles[x, z];
 
         public Wall GetWallByDirection(int x, int z, Direction direction)
         {
-            Wall[,] walls;
+            Line[] lines;
+            int lineId, wallId;
             switch (direction)
             {
                 case Direction.Up:
-                    walls = horizontalWalls;
+                    lines = horizontalWallLines;
+                    lineId = x;
+                    wallId = z;
                     break;
                 case Direction.Down:
-                    x++;
-                    walls = horizontalWalls;
+                    lines = horizontalWallLines;
+                    lineId = x + 1;
+                    wallId = z;
                     break;
                 case Direction.Right:
-                    z++;
-                    walls = verticalWalls;
+                    lines = verticalWallLines;
+                    lineId = z + 1;
+                    wallId = x;
                     break;
                 case Direction.Left:
-                    walls = verticalWalls;
+                    lines = verticalWallLines;
+                    lineId = z;
+                    wallId = x;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
 
-            return walls[x, z];
+            return lines[lineId].Walls[wallId];
         }
 
         public Tile GetTileInDirection(int x, int z, Direction direction)
@@ -102,26 +104,16 @@ namespace GridMaze.Maze
             return true;
         }
 
-        public Wall[] GetLineHorizontal(int x)
+        public Line GetLineHorizontal(int x)
         {
-            var line = x % horizontalWalls.GetLength(0);
-            for (var i = 0; i < selectedHorizontalWallLine.Length; i++)
-            {
-                selectedHorizontalWallLine[i] = horizontalWalls[line, i];
-            }
-
-            return selectedHorizontalWallLine;
+            var lineId = x % horizontalWallLines.Length;
+            return horizontalWallLines[lineId];
         }
-
-        public Wall[] GetLineVertical(int z)
+        
+        public Line GetLineVertical(int z)
         {
-            var column = z % verticalWalls.GetLength(1);
-            for (var i = 0; i < selectedVerticalWallLine.Length; i++)
-            {
-                selectedVerticalWallLine[i] = verticalWalls[i, column];
-            }
-
-            return selectedVerticalWallLine;
+            var lineId = z % verticalWallLines.Length;
+            return verticalWallLines[lineId];
         }
     }
 }

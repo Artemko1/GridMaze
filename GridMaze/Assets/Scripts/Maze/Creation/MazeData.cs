@@ -3,13 +3,13 @@
     public class MazeData
     {
         public readonly TileData[,] Tiles;
-        public readonly WallData[,] HorizontalWallDatas;
-        public readonly WallData[,] VerticalWallDatas;
+        public readonly WallDataLine[] HorizontalWallDataLines;
+        public readonly WallDataLine[] VerticalWallDataLines;
 
-        public MazeData(TileData[,] tiles, WallData[,] horizontalWallDatas, WallData[,] verticalWallDatas)
+        public MazeData(TileData[,] tiles, WallDataLine[] horizontalWallDataLines, WallDataLine[] verticalWallDataLines)
         {
-            HorizontalWallDatas = horizontalWallDatas;
-            VerticalWallDatas = verticalWallDatas;
+            HorizontalWallDataLines = horizontalWallDataLines;
+            VerticalWallDataLines = verticalWallDataLines;
             Tiles = tiles;
         }
 

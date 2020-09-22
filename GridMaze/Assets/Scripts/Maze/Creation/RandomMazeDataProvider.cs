@@ -25,31 +25,36 @@ namespace GridMaze.Maze.Creation
                 }
             }
 
-            var horizontalWallDatas = new WallData[gridLength + 1, gridWidth];
-            // Внешний сверху вниз, внутренний слева направо
-            for (var row = 0; row < horizontalWallDatas.GetLength(0); row++)
+            var horizontalWallDataLines = new WallDataLine[gridLength + 1];
+            for (var lineId = 0; lineId < horizontalWallDataLines.Length; lineId++)
             {
-                for (var column = 0; column < horizontalWallDatas.GetLength(1); column++)
+                var dataLine = new WallData[gridWidth];
+                for (var wallId = 0; wallId < dataLine.Length; wallId++)
                 {
-                    horizontalWallDatas[row, column] = Random.value < simpleWallProbability
+                    dataLine[wallId] = Random.value < simpleWallProbability
                         ? wallDataCollection.EmptyWall
                         : wallDataCollection.SimpleWall;
                 }
+
+                horizontalWallDataLines[lineId] = new WallDataLine(dataLine);
             }
 
-            var verticalWallDatas = new WallData[gridLength, gridWidth + 1];
-            // Внешний сверху вниз, внутренний слева направо
-            for (var row = 0; row < verticalWallDatas.GetLength(0); row++)
+
+            var verticalWallDataLines = new WallDataLine[gridWidth + 1];
+            for (var lineId = 0; lineId < verticalWallDataLines.Length; lineId++)
             {
-                for (var column = 0; column < verticalWallDatas.GetLength(1); column++)
+                var dataLine = new WallData[gridLength];
+                for (var wallId = 0; wallId < dataLine.Length; wallId++)
                 {
-                    verticalWallDatas[row, column] = Random.value < simpleWallProbability
+                    dataLine[wallId] = Random.value < simpleWallProbability
                         ? wallDataCollection.EmptyWall
                         : wallDataCollection.SimpleWall;
                 }
+
+                verticalWallDataLines[lineId] = new WallDataLine(dataLine);
             }
 
-            return new MazeData(tileDatas, horizontalWallDatas, verticalWallDatas);
+            return new MazeData(tileDatas, horizontalWallDataLines, verticalWallDataLines);
         }
     }
 }
