@@ -1,4 +1,5 @@
-﻿using GridMaze.Maze;
+﻿using System;
+using GridMaze.Maze;
 using GridMaze.Maze.Creation;
 using UnityEngine;
 
@@ -6,38 +7,23 @@ namespace GridMaze.Core
 {
     public class MazeManager : MonoBehaviour
     {
-        public static MazeManager Instance { get; private set; }
+        // public static MazeManager Instance { get; private set; }
 
         private IMazeDataProvider mazeDataProvider;
         private MazeGenerator mazeGenerator;
+        private WallSelector wallSelector;
 
         private MazeGrids mazeGrids;
 
-        public bool IsMovementAllowed(int x, int z, Direction direction)
-        {
-            var wall = mazeGrids.GetWallByDirection(x, z, direction);
-            return wall.IsMoveAllowed;
-        }
-
-        public Tile GetTileInDirection(int x, int z, Direction direction)
-        {
-            return mazeGrids.GetTileInDirection(x, z, direction);
-        }
-
-        public bool IsTileInDirection(int x, int z, Direction direction)
-        {
-            return mazeGrids.IsTileInDirection(x, z, direction);
-        }
-
         private void Awake()
         {
-            if (Instance != null)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
+            // if (Instance != null)
+            // {
+            //     Destroy(gameObject);
+            //     return;
+            // }
+            //
+            // Instance = this;
 
             mazeDataProvider = GetComponent<IMazeDataProvider>();
             mazeGenerator = GetComponent<MazeGenerator>();
@@ -48,7 +34,23 @@ namespace GridMaze.Core
             var mazeData = mazeDataProvider.GetMazeData();
             mazeGrids = mazeGenerator.GenerateMaze(mazeData);
 
-            Player.Create(mazeGrids.GetTile(0, 0), transform);
+            wallSelector = new WallSelector(mazeGrids);
+
+            Player.Create(mazeGrids.GetTile(0, 0), transform, mazeGrids);
+            
+            wallSelector.ResumeSelection();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                wallSelector.SwitchLines();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                wallSelector.SelectNextLine();
+            }
         }
     }
 }

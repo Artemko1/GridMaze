@@ -6,23 +6,25 @@ namespace GridMaze.Core
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField] private Tile currentTile;
+        private Tile currentTile;
+        private MazeGrids mazeGrids;
 
-        public static Player Create(Tile tile, Transform parent)
+        public static Player Create(Tile tile, Transform parent, MazeGrids mazeGrids)
         {
             var player =
                 Instantiate(GameAssets.Instance.PlayerPrefab, tile.transform.position, Quaternion.identity, parent)
                     .GetComponent<Player>();
             player.currentTile = tile;
+            player.mazeGrids = mazeGrids;
             return player;
         }
 
         private void TryMove(Direction direction)
         {
-            if (!MazeManager.Instance.IsMovementAllowed(currentTile.X, currentTile.Z, direction) ||
-                !MazeManager.Instance.IsTileInDirection(currentTile.X, currentTile.Z, direction)) return;
+            if (!mazeGrids.GetWallByDirection(currentTile.X, currentTile.Z, direction).IsMoveAllowed ||
+                !mazeGrids.IsTileInDirection(currentTile.X, currentTile.Z, direction)) return;
 
-            Move(MazeManager.Instance.GetTileInDirection(currentTile.X, currentTile.Z, direction));
+            Move(mazeGrids.GetTileInDirection(currentTile.X, currentTile.Z, direction));
         }
 
         private void Move(Tile tileToMove)

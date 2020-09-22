@@ -9,12 +9,17 @@ namespace GridMaze.Maze
         private readonly Tile[,] tiles = null;
         private readonly Wall[,] horizontalWalls;
         private readonly Wall[,] verticalWalls;
+        
+        private readonly Wall[] selectedVerticalWallLine; // Длина равна высоте лабиринта
+        private readonly Wall[] selectedHorizontalWallLine; // Длина равна ширине лабиринта
 
         public MazeGrids(Tile[,] tiles, Wall[,] horizontalWalls, Wall[,] verticalWalls)
         {
             this.tiles = tiles;
             this.horizontalWalls = horizontalWalls;
             this.verticalWalls = verticalWalls;
+            selectedVerticalWallLine = new Wall[verticalWalls.GetLength(0)]; // должно быть 2
+            selectedHorizontalWallLine = new Wall[horizontalWalls.GetLength(1)]; // должно быть 7
         }
 
         public Tile GetTile(int x, int z) => tiles[x, z];
@@ -45,15 +50,6 @@ namespace GridMaze.Maze
             return walls[x, z];
         }
 
-        
-        /// <summary>
-        /// Возвращает null, если нет Tile по direction.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="z"></param>
-        /// <param name="direction"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Tile GetTileInDirection(int x, int z, Direction direction)
         {
             switch (direction)
@@ -72,11 +68,6 @@ namespace GridMaze.Maze
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-
-            if (x >= tiles.GetLength(0) || z >= tiles.GetLength(1) || x < 0 || z < 0)
-            {
-                Debug.LogError("No Tile in Direction");
             }
 
             return tiles[x, z];
@@ -101,7 +92,7 @@ namespace GridMaze.Maze
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
-            
+
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (x >= tiles.GetLength(0) || z >= tiles.GetLength(1) || x < 0 || z < 0)
             {
@@ -109,7 +100,28 @@ namespace GridMaze.Maze
             }
 
             return true;
+        }
 
+        public Wall[] GetLineHorizontal(int x)
+        {
+            var line = x % horizontalWalls.GetLength(0);
+            for (var i = 0; i < selectedHorizontalWallLine.Length; i++)
+            {
+                selectedHorizontalWallLine[i] = horizontalWalls[line, i];
+            }
+
+            return selectedHorizontalWallLine;
+        }
+
+        public Wall[] GetLineVertical(int z)
+        {
+            var column = z % verticalWalls.GetLength(1);
+            for (var i = 0; i < selectedVerticalWallLine.Length; i++)
+            {
+                selectedVerticalWallLine[i] = verticalWalls[i, column];
+            }
+
+            return selectedVerticalWallLine;
         }
     }
 }

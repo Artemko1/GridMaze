@@ -5,9 +5,13 @@ namespace GridMaze.Maze
 {
     public class Wall : MonoBehaviour
     {
+        [SerializeField] private new Renderer renderer = null;
+        
         private WallData data;
 
         public bool IsMoveAllowed => data.IsWalkable;
+
+        public Renderer Renderer => renderer;
 
         public static Wall CreateHorizontal(WallData wallData, Vector3 position, Transform parent)
         {
