@@ -2,7 +2,7 @@
 {
     public class WallSelector
     {
-        public Line CurrentSelection { get; private set; }
+        public Line SelectedLine { get; private set; }
 
         private readonly MazeGrids mazeGrids;
 
@@ -14,12 +14,12 @@
         public WallSelector(MazeGrids mazeGrids)
         {
             this.mazeGrids = mazeGrids;
-            CurrentSelection = mazeGrids.GetLineHorizontal(0);
+            SelectedLine = mazeGrids.GetLineHorizontal(0);
         }
 
         public void ResumeSelection()
         {
-            foreach (var wall in CurrentSelection.Walls)
+            foreach (var wall in SelectedLine.Walls)
             {
                 WallOutliner.Select(wall.Renderer);
             }
@@ -27,7 +27,7 @@
 
         public void CleanSelection()
         {
-            foreach (var wall in CurrentSelection.Walls)
+            foreach (var wall in SelectedLine.Walls)
             {
                 WallOutliner.Deselect(wall.Renderer);
             }
@@ -58,7 +58,7 @@
         {
             CleanSelection();
             
-            CurrentSelection = isHorizontalSelection
+            SelectedLine = isHorizontalSelection
                 ? mazeGrids.GetLineHorizontal(horizontalWallIndex)
                 : mazeGrids.GetLineVertical(verticalWallIndex);
 

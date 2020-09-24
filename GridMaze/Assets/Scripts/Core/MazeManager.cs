@@ -1,5 +1,4 @@
-﻿using System;
-using GridMaze.Maze;
+﻿using GridMaze.Maze;
 using GridMaze.Maze.Creation;
 using UnityEngine;
 
@@ -50,6 +49,14 @@ namespace GridMaze.Core
             else if (Input.GetKeyDown(KeyCode.N))
             {
                 wallSelector.SelectNextLine();
+            }
+            else if (Input.GetKeyDown(KeyCode.B))
+            {
+                wallSelector.SelectedLine.ShiftLineBackward();
+            }
+            else if (Input.GetKeyDown(KeyCode.F))
+            {
+                wallSelector.SelectedLine.ShiftLineForward();
             }
         }
     }

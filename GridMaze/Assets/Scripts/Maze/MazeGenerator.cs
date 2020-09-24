@@ -1,4 +1,6 @@
-﻿using GridMaze.Maze.Creation;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GridMaze.Maze.Creation;
 using UnityEngine;
 
 namespace GridMaze.Maze
@@ -30,32 +32,26 @@ namespace GridMaze.Maze
             for (var lineId = 0; lineId < horizontalWallLines.Length; lineId++)
             {
                 var dataLine = mazeData.HorizontalWallDataLines[lineId];
-                var wallLine = new Wall[dataLine.WallDatas.Length];
-                for (var wall = 0; wall < wallLine.Length; wall++)
-                {
-                    wallLine[wall] = Wall.CreateHorizontal(dataLine.WallDatas[wall],
-                        tr.position + new Vector3(lineId * offset - offset / 2, 0,
-                            wall * offset), tr);
-                }
+                var line = new List<Wall>(dataLine.WallDatas.Length);
+                line.AddRange(dataLine.WallDatas.Select((t, wall) =>
+                    Wall.CreateHorizontal(t,
+                        tr.position + new Vector3(lineId * offset - offset / 2, 0, wall * offset), tr)));
 
-                horizontalWallLines[lineId] = new Line(wallLine);
+                horizontalWallLines[lineId] = new Line(line);
             }
 
             var verticalWallLines = new Line[mazeData.VerticalWallDataLines.Length];
             for (var lineId = 0; lineId < verticalWallLines.Length; lineId++)
             {
                 var dataLine = mazeData.VerticalWallDataLines[lineId];
-                var wallLine = new Wall[dataLine.WallDatas.Length];
-                for (var wall = 0; wall < wallLine.Length; wall++)
-                {
-                    wallLine[wall] = Wall.CreateVertical(dataLine.WallDatas[wall],
-                        tr.position + new Vector3(wall * offset, 0,
-                            lineId * offset - offset / 2), tr);
-                }
+                var line = new List<Wall>(dataLine.WallDatas.Length);
+                line.AddRange(dataLine.WallDatas.Select((t, wall) =>
+                    Wall.CreateVertical(t,
+                        tr.position + new Vector3(wall * offset, 0, lineId * offset - offset / 2), tr)));
 
-                verticalWallLines[lineId] = new Line(wallLine);
+                verticalWallLines[lineId] = new Line(line);
             }
-            
+
             return new MazeGrids(tiles, horizontalWallLines, verticalWallLines);
         }
 
