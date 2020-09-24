@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace GridMaze.Maze
@@ -16,7 +17,7 @@ namespace GridMaze.Maze
             positions = new Vector3[walls.Count];
             for (var i = 0; i < positions.Length; i++)
             {
-                positions[i] = walls[i].transform.localPosition;
+                positions[i] = walls[i].transform.position;
             }
         }
 
@@ -30,7 +31,7 @@ namespace GridMaze.Maze
 
             for (var i = 0; i < Walls.Count; i++)
             {
-                Walls[i].transform.localPosition = positions[i];
+                Walls[i].transform.DOMove(positions[i], 0.2f);
             }
         }
 
@@ -43,7 +44,7 @@ namespace GridMaze.Maze
 
             for (var i = 0; i < Walls.Count; i++)
             {
-                Walls[i].transform.localPosition = positions[i];
+                Walls[i].transform.DOMove(positions[i], 0.2f);
             }
         }
     }

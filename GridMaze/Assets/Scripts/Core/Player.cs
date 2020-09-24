@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using GridMaze.Maze;
 using UnityEngine;
 
@@ -29,7 +30,8 @@ namespace GridMaze.Core
 
         private void Move(Tile tileToMove)
         {
-            transform.position = tileToMove.transform.position;
+            // transform.position = tileToMove.transform.position;
+            transform.DOMove(tileToMove.transform.position, 0.2f);
             currentTile = tileToMove;
         }
 
